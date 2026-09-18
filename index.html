@@ -782,33 +782,9 @@ h2 em, h3 em { color: var(--gold-ink); }
   transition: opacity var(--transition), transform var(--transition);
 }
 .reel-card:hover .reel-play { transform: translate(-50%, -50%) scale(1.08); }
-/* muted autoplay: small sound cue sits low-right, out of the title's way */
-.reel-card.is-playing:not(.is-live) .reel-play {
-  top: auto; left: auto; right: 0.7rem; bottom: 3.9rem;
-  transform: none;
-  width: 34px; height: 34px;
-  padding-left: 0; font-size: 0.72rem;
-  background: rgba(20, 18, 14, 0.55);
-  color: var(--ivory);
-  border: 1px solid rgba(248, 244, 239, 0.4);
-  box-shadow: none;
-}
-.reel-card.is-playing:not(.is-live):hover .reel-play {
-  transform: scale(1.08);
-  background: var(--gold); color: var(--charcoal); border-color: var(--gold);
-}
-/* playing with sound: chrome gets out of the way until hover */
-.reel-card.is-live .reel-play { opacity: 0; }
-.reel-card.is-live:hover .reel-play,
-.reel-card.is-live:focus-visible .reel-play { opacity: 1; }
-/* clip missing or undecodable — keep the tile, drop the affordance */
-.reel-card.is-error { cursor: default; }
-.reel-card.is-error:hover { transform: none; box-shadow: none; }
-.reel-card.is-error .reel-play {
-  background: none; box-shadow: none;
-  border: 1px solid rgba(248, 244, 239, 0.35);
-  color: rgba(248, 244, 239, 0.6);
-}
+.reel-card.is-playing .reel-play { opacity: 0; }
+.reel-card.is-playing:hover .reel-play,
+.reel-card.is-playing:focus-visible .reel-play { opacity: 1; }
 .reel-title {
   position: absolute; z-index: 2; left: 0.85rem; right: 0.85rem; bottom: 0.85rem;
   text-align: left;
@@ -1338,7 +1314,7 @@ Advocating for Sustainable Fashion Through Creativity & Circular Design</dd>
       <button class="gallery-item reveal" type="button" data-cat="pageantry" data-src="pageantry-1.jpg" aria-label="Open Crown of Impact">
         <img src="pageantry.jpeg" alt="Pageantry stage moment" loading="lazy" decoding="async">
         <span class="gallery-zoom-icon" aria-hidden="true">+</span>
-        <span class="gallery-overlay"><span class="gallery-overlay-text">Pageantry<b>Crown of Impact</b></span></span>
+        <span class="gallery-overlay"><span class="gallery-overlay-text">Pageantry</span></span>
       </button>
 
       <button class="gallery-item reveal reveal-delay-1" type="button" data-cat="fashion" data-src="fashion-2.jpg" aria-label="Open Runway Series II">
@@ -1348,7 +1324,7 @@ Advocating for Sustainable Fashion Through Creativity & Circular Design</dd>
       </button>
 
       <button class="gallery-item reveal reveal-delay-2" type="button" data-cat="editorial" data-src="editorial-2.jpg" aria-label="Open Golden Light">
-        <img src="editorial-2.jpg" alt="Editorial in golden light" loading="lazy" decoding="async">
+        <img src="pageantry1.jpeg" alt="Editorial in golden light" loading="lazy" decoding="async">
         <span class="gallery-zoom-icon" aria-hidden="true">+</span>
         <span class="gallery-overlay"><span class="gallery-overlay-text">Editorial<b>Golden Light</b></span></span>
       </button>
@@ -1375,28 +1351,28 @@ Advocating for Sustainable Fashion Through Creativity & Circular Design</dd>
 
       <div class="reels-track" id="reelsTrack">
         <button class="reel-card" type="button" aria-label="Play The latest drop">
-          <video src="showreel.MP4" preload="auto" muted loop playsinline autoplay></video>
+          <video src="showreel.MP4" preload="metadata" muted loop playsinline></video>
           <span class="reel-badge">Reel</span>
           <span class="reel-play" aria-hidden="true">▶</span>
-          <span class="reel-title">GlowbyJane<span>Commercial</span></span>
+          <span class="reel-title">Crowning Moments<span>Miss Prom KCA Town Campus</span></span>
         </button>
 
         <button class="reel-card" type="button" aria-label="Play Aura Beauty UGC">
-          <video src="aurabeauty.mp4" preload="auto" muted loop playsinline autoplay></video>
+          <video src="aurabeauty.mp4" preload="metadata" muted loop playsinline></video>
           <span class="reel-badge">Reel</span>
           <span class="reel-play" aria-hidden="true">▶</span>
           <span class="reel-title">Aurabeauty<span>UGC</span></span>
         </button>
 
         <button class="reel-card" type="button" aria-label="Play Behind the look">
-          <video src="reel-3.mp4" preload="auto" muted loop playsinline autoplay></video>
+          <video src="reel-3.mp4" preload="metadata" muted loop playsinline></video>
           <span class="reel-badge">Reel</span>
           <span class="reel-play" aria-hidden="true">▶</span>
           <span class="reel-title">Behind the look<span>Backstage</span></span>
         </button>
 
         <button class="reel-card" type="button" aria-label="Play Crown moments">
-          <video src="reel-4.mp4" preload="auto" muted loop playsinline autoplay></video>
+          <video src="reel-4.mp4" preload="metadata" muted loop playsinline></video>
           <span class="reel-badge">Reel</span>
           <span class="reel-play" aria-hidden="true">▶</span>
           <span class="reel-title">Crown moments<span>Pageantry</span></span>
@@ -1790,122 +1766,24 @@ adds to the other. I want to build a career that gives me room to explore all of
   if (reelsTrack) {
     var reelCards = $$('.reel-card', reelsTrack);
 
-    function reelTitle(card) {
-      var t = $('.reel-title', card);
-      return t ? t.firstChild.nodeValue.trim() : 'reel';
-    }
-
-    /* play()/pause() race guard: a pause() landing on an in-flight play()
-       rejects it with AbortError and the clip never starts again. Track the
-       wanted state and reconcile once the promise settles. */
-    function reelApply(card) {
-      var v = $('video', card);
-      if (v.pending || card.classList.contains('is-error')) return;
-
-      if (card.want && v.paused) {
-        var p = v.play();
-        if (!p) return;
-        v.pending = true;
-        p.then(function () {
-          v.pending = false;
-          if (!card.want) v.pause();
-        }, function () {
-          v.pending = false;
-          /* a muted play() can still be refused mid-load — retry a few times */
-          if (!v.muted) { v.muted = true; reelSilence(card); }
-          card.tries = (card.tries || 0) + 1;
-          if (card.want && card.tries <= 5) {
-            setTimeout(function () { reelApply(card); }, 350);
-          }
-        });
-      } else if (!card.want && !v.paused) {
-        v.pause();
-      }
-    }
-    function reelPlay(card)  { card.want = true;  reelApply(card); }
-    function reelPause(card) { card.want = false; reelApply(card); }
-
-    function reelSilence(card) {
-      var v = $('video', card);
-      v.muted = true;
-      card.classList.remove('is-live');
-      $('.reel-play', card).textContent = v.paused ? '▶' : '🔇';
-      card.setAttribute('aria-label', 'Play ' + reelTitle(card) + ' with sound');
-    }
-
-    /* Visibility by measurement, not IntersectionObserver: the observer stops
-       reporting once a card is clipped by the track's own overflow. */
-    function reelOnScreen(card) {
-      var r  = card.getBoundingClientRect();
-      var vh = window.innerHeight || document.documentElement.clientHeight;
-      var vw = window.innerWidth  || document.documentElement.clientWidth;
-      var down  = Math.min(r.bottom, vh) - Math.max(r.top, 0);
-      var along = Math.min(r.right, vw)  - Math.max(r.left, 0);
-      return down > r.height * 0.3 && along > r.width * 0.5;
-    }
-    function reelSync() {
-      reelCards.forEach(function (card) {
-        var on = reduceMotion ? false : reelOnScreen(card);
-        if (on === card.onScreen) return;
-        card.onScreen = on;
-        if (on) reelPlay(card);
-        else { reelPause(card); reelSilence(card); }
-      });
-    }
-
     reelCards.forEach(function (card) {
       var v = $('video', card);
-      var icon = $('.reel-play', card);
-
-      card.want = false;
-      reelSilence(card);
 
       card.addEventListener('click', function () {
-        if (card.classList.contains('is-error')) return;
-        if (v.muted || v.paused) {
-          reelCards.forEach(function (o) { if (o !== card) reelSilence(o); });
-          card.classList.add('is-live');
+        if (v.paused) {
+          reelCards.forEach(function (o) { if (o !== card) $('video', o).pause(); });
           v.muted = false;
-          icon.textContent = '❚❚';
-          card.setAttribute('aria-label', 'Pause ' + reelTitle(card));
-          reelPlay(card);
+          var p = v.play();
+          if (p) p.catch(function () { v.muted = true; v.play().catch(function () {}); });
         } else {
-          reelPause(card);
-          reelSilence(card);
-          icon.textContent = '▶';
-          card.setAttribute('aria-label', 'Play ' + reelTitle(card));
+          v.pause();
         }
       });
 
-      /* data lands after the first play() attempt — pick it back up */
-      v.addEventListener('canplay',    function () { reelApply(card); });
-      v.addEventListener('loadeddata', function () { reelApply(card); });
-
-      v.addEventListener('play',  function () {
-        card.classList.add('is-playing');
-        if (!card.classList.contains('is-live')) icon.textContent = '🔇';
-      });
+      v.addEventListener('play',  function () { card.classList.add('is-playing'); });
       v.addEventListener('pause', function () { card.classList.remove('is-playing'); });
-
-      v.addEventListener('error', function () {
-        card.classList.add('is-error');
-        card.classList.remove('is-playing', 'is-live');
-        icon.textContent = '—';
-        card.setAttribute('aria-label', reelTitle(card) + ' — clip unavailable');
-      });
+      v.addEventListener('ended', function () { card.classList.remove('is-playing'); });
     });
-
-    var reelTick = false;
-    function reelQueue() {
-      if (reelTick) return;
-      reelTick = true;
-      requestAnimationFrame(function () { reelTick = false; reelSync(); });
-    }
-    window.addEventListener('scroll', reelQueue, { passive: true });
-    window.addEventListener('resize', reelQueue);
-    reelsTrack.addEventListener('scroll', reelQueue, { passive: true });
-    window.addEventListener('load', reelSync);
-    reelSync();
 
     var reelsPrev = $('#reelsPrev'), reelsNext = $('#reelsNext');
 
