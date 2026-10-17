@@ -735,6 +735,27 @@ h2 em, h3 em { color: var(--gold-ink); }
 }
 .medium-link:hover, .medium-link:focus-visible { color: var(--gold-ink); letter-spacing: 0.28em; }
 .medium-link:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; }
+.model-toggle span { display: inline-block; transition: transform var(--transition); }
+.model-toggle[aria-expanded="true"] span { transform: rotate(-90deg); }
+.model-details {
+  margin-top: 1.6rem; padding-top: 1.4rem;
+  border-top: 1px solid var(--gold-pale);
+  animation: mediumSwap 0.35s ease;
+}
+.model-stats {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+}
+.model-stats > div { padding: 0 0.9rem; border-left: 1px solid var(--gold-pale); }
+.model-stats > div:first-child { padding-left: 0; border-left: 0; }
+.model-stats dt {
+  font-size: 0.58rem; letter-spacing: 0.26em; text-transform: uppercase;
+  color: var(--text-muted); margin-bottom: 0.45rem;
+}
+.model-stats dd {
+  font-family: var(--font-serif); font-size: 1.6rem; line-height: 1;
+  color: var(--charcoal);
+}
+.model-stats dd span { font-size: 0.85rem; color: var(--text-muted); }
 .medium-nav {
   display: flex; justify-content: space-between; gap: 1rem;
   margin-top: auto; padding-top: 2.4rem;
@@ -1146,6 +1167,8 @@ footer {
   .medium-subtitle { margin-bottom: 1rem; }
   .medium-nav { padding-top: 1rem; }
   .medium-step { padding: 0.8rem 0; }
+  .model-stats { grid-template-columns: repeat(2, 1fr); row-gap: 1.2rem; }
+  .model-stats > div:nth-child(3) { padding-left: 0; border-left: 0; }
 
   .philosophy-split { gap: 0; align-items: flex-start; }
   .philosophy-split-image { width: 34vw; max-width: 140px; padding: 4px; }
@@ -1266,7 +1289,7 @@ footer {
         <div class="section-divider reveal reveal-delay-1"></div>
 
         <p class="reveal reveal-delay-2">
-          Nyambeka Bridgit Gichana is a Kenyan model, creative and Bachelor of Science in Applied
+          Nyambeka Bridgit(Miabrita) is a Kenyan model, creative and Bachelor of Science in Applied
           Computing student based in Nairobi. Her work sits at the intersection of fashion,
           technology, leadership, sustainability and African identity.
         </p>
@@ -1540,6 +1563,16 @@ footer {
         <div class="panel-story" hidden>
           <p class="medium-subtitle">Expression. Confidence. Storytelling.</p>
           <p>Fashion is my language of expression, confidence and storytelling. Through every look, I explore identity, embody ideas and bring stories to life.</p>
+          <button class="medium-link model-toggle" type="button" aria-expanded="false">View Model Details <span aria-hidden="true">→</span></button>
+          <!-- Model measurements: edit the values below to update them -->
+          <div class="model-details" hidden>
+            <dl class="model-stats">
+              <div><dt>Height</dt><dd>5'6"</dd></div>
+              <div><dt>Bust</dt><dd>36 <span>in</span></dd></div>
+              <div><dt>Waist</dt><dd>28 <span>in</span></dd></div>
+              <div><dt>Hips</dt><dd>40 <span>in</span></dd></div>
+            </dl>
+          </div>
         </div>
       </article>
       <article class="panel reveal reveal-delay-1">
@@ -1592,7 +1625,7 @@ footer {
 <section id="philosophy">
   <div class="philosophy-split">
     <button class="philosophy-split-image" id="philosophyPhoto" type="button" aria-label="View photo larger">
-      <img class="philosophy-photo" src="transform-2.jpg"
+      <img class="philosophy-photo" src="bree.jpeg"
            alt="Nyambeka Bridgit portrait" loading="lazy" decoding="async">
       <span class="gallery-zoom-icon" aria-hidden="true">+</span>
     </button>
@@ -1974,6 +2007,7 @@ adds to the other. I want to build a career that gives me room to explore all of
     $('.pillar-modal-close', pillarModal).addEventListener('click', function () { pillarModal.close(); });
     // Click on the backdrop (outside the dialog box) closes it
     pillarModal.addEventListener('click', function (e) {
+      if (e.target !== pillarModal) return; // clicks on content (incl. keyboard-triggered ones at 0,0) never close
       var r = pillarModal.getBoundingClientRect();
       if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) pillarModal.close();
     });
@@ -1996,6 +2030,11 @@ adds to the other. I want to build a career that gives me room to explore all of
       $('#mediumNum').textContent   = $('.panel-label span', p).textContent + ' / ' + (panels.length < 10 ? '0' : '') + panels.length;
       $('#mediumTitle').textContent = titleOf(mIndex);
       $('#mediumStory').innerHTML   = $('.panel-story', p).innerHTML;
+      var details = $('#mediumStory .model-details');
+      if (details) {
+        details.id = 'mediumModelDetails';
+        $('#mediumStory .model-toggle').setAttribute('aria-controls', details.id);
+      }
       $('#mediumPrev').setAttribute('aria-label', 'Previous: ' + titleOf(prev));
       $('#mediumNext').setAttribute('aria-label', 'Next: ' + titleOf(next));
       if (swap && !reduceMotion) {
@@ -2036,6 +2075,17 @@ adds to the other. I want to build a career that gives me room to explore all of
       btn.addEventListener('click', function () { openMedium(i, btn); });
     });
     $('.medium-close', mediumModal).addEventListener('click', closeMedium);
+    // "View Model Details" toggle inside the copied story (rebuilt on every render, so delegate)
+    $('#mediumStory').addEventListener('click', function (e) {
+      var toggle = e.target.closest('.model-toggle');
+      if (!toggle) return;
+      var details = $('.model-details', this);
+      var show = toggle.getAttribute('aria-expanded') !== 'true';
+      details.hidden = !show;
+      toggle.setAttribute('aria-expanded', String(show));
+      toggle.firstChild.textContent = show ? 'Hide Model Details ' : 'View Model Details ';
+      if (show) details.scrollIntoView({ block: 'nearest', behavior: reduceMotion ? 'auto' : 'smooth' });
+    });
     $('#mediumPrev').addEventListener('click', function () { stepMedium(-1); });
     $('#mediumNext').addEventListener('click', function () { stepMedium(1); });
 
@@ -2047,6 +2097,7 @@ adds to the other. I want to build a career that gives me room to explore all of
     mediumModal.addEventListener('cancel', function (e) { e.preventDefault(); closeMedium(); });
     // Clicks on the backdrop land on the dialog element itself, outside its box
     mediumModal.addEventListener('click', function (e) {
+      if (e.target !== mediumModal) return; // clicks on content (incl. keyboard-triggered ones at 0,0) never close
       var r = mediumModal.getBoundingClientRect();
       if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) closeMedium();
     });
