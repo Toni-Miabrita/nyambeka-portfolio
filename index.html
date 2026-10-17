@@ -418,49 +418,37 @@ h2 em, h3 em { color: var(--gold-ink); }
   font-weight: 300; line-height: 1.5;
   color: var(--charcoal);
 }
-.about-highlights {
-  display: flex; flex-wrap: wrap; gap: 2.5rem;
-  margin-top: 2.5rem; padding-top: 2.5rem;
-  border-top: 1px solid var(--gold-pale);
-}
-.highlight-item { text-align: center; }
-.highlight-num {
-  display: block;
-  font-family: var(--font-serif);
-  font-size: 2.5rem; line-height: 1;
-  color: var(--gold-ink);
-}
-.highlight-label {
-  display: block; margin-top: 0.4rem;
-  font-size: 0.65rem; letter-spacing: 0.2em;
-  text-transform: uppercase; color: var(--text-muted);
-}
 
 /* ── STATS BAND ────────────────────────────── */
+#standing { padding: 3.5rem 0; }
+#standing .section-header { margin-bottom: 0; }
+#standing .section-header h2 { font-size: clamp(1.6rem, 3vw, 2.1rem); }
+#standing .section-divider { margin: 1rem 0 0; }
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 1px;
-  background: rgba(197, 164, 107, 0.25);
-  margin-top: 3rem;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1.5rem 0;
+  margin-top: 2rem;
+  border-top: 1px solid rgba(197, 164, 107, 0.25);
 }
 .stat-card {
-  background: var(--deep-olive);
-  padding: 2.5rem 2rem;
-  text-align: center;
-  transition: background var(--transition);
-  display: flex; flex-direction: column;
-  justify-content: flex-start; gap: 0.8rem;
+  padding: 1.25rem 1.5rem 0 0;
+  margin-right: 1.5rem;
+  border-right: 1px solid rgba(197, 164, 107, 0.2);
+  display: flex; flex-direction: column; gap: 0.4rem;
 }
-.stat-card:hover { background: var(--olive-mid); }
+.stat-card:last-child { border-right: 0; margin-right: 0; }
 .stat-label {
-  font-size: 0.62rem; letter-spacing: 0.28em;
+  font-size: 0.6rem; letter-spacing: 0.28em;
   text-transform: uppercase; color: var(--gold);
 }
 .stat-value {
   font-family: var(--font-serif);
-  font-size: 1.8rem; font-weight: 300;
+  font-size: 1.05rem; font-weight: 300; line-height: 1.4;
   color: var(--ivory);
+}
+@media (max-width: 600px) {
+  .stat-card { border-right: 0; margin-right: 0; padding-right: 0; }
 }
 
 /* ── GALLERY ───────────────────────────────── */
@@ -624,10 +612,48 @@ h2 em, h3 em { color: var(--gold-ink); }
 .focus-card h3 { margin-bottom: 1rem; }
 .focus-card p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.8; }
 
+/* Purpose pillars: three across, preview clipped, full text opens in a dialog */
+.pillars-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+.pillar-card { cursor: pointer; display: flex; flex-direction: column; }
+.pillar-card:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+.pillar-card p {
+  display: -webkit-box; -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4; line-clamp: 4; overflow: hidden;
+}
+.pillar-more {
+  margin-top: auto; padding-top: 1.2rem;
+  font-size: 0.62rem; letter-spacing: 0.25em; text-transform: uppercase;
+  color: var(--gold-ink);
+}
+.pillar-card:hover .pillar-more { color: var(--charcoal); }
+.pillar-modal {
+  width: min(36rem, calc(100vw - 2rem));
+  margin: auto; padding: 2.8rem 2.4rem 2.4rem;
+  border: 1px solid var(--gold-pale);
+  background: #fff; color: var(--charcoal);
+  box-shadow: 0 24px 60px rgba(26, 26, 24, 0.3);
+}
+.pillar-modal::backdrop { background: rgba(20, 18, 14, 0.7); }
+.pillar-modal .focus-num {
+  display: block; margin-bottom: 1.2rem;
+  font-size: 0.62rem; letter-spacing: 0.25em; color: var(--gold-ink);
+}
+.pillar-modal h3 { margin-bottom: 1rem; }
+.pillar-modal p { color: var(--text-muted); font-size: 0.98rem; line-height: 1.85; }
+.pillar-modal-close {
+  position: absolute; top: 0.9rem; right: 1rem;
+  font-size: 1.1rem; line-height: 1; color: var(--text-muted);
+}
+.pillar-modal-close:hover { color: var(--charcoal); }
+
 /* ── MEDIUMS TRIPTYCH ──────────────────────── */
 .triptych {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 1.2rem;
 }
 .panel { position: relative; overflow: hidden; aspect-ratio: 2 / 3; }
@@ -649,35 +675,126 @@ h2 em, h3 em { color: var(--gold-ink); }
   margin-bottom: 0.4rem;
 }
 .panel-label h3 { color: var(--ivory); font-style: italic; }
+/* Invisible button stretched over the whole panel makes it clickable */
+.panel-open { position: absolute; inset: 0; z-index: 3; width: 100%; }
+.panel-open:focus-visible { outline: 2px solid var(--gold); outline-offset: -4px; }
+.panel:focus-within img { transform: scale(1.06); }
+.panel-label h3 { transition: color var(--transition); }
+.panel:hover .panel-label h3 { color: var(--gold-light); }
+
+/* Mediums expanded card */
+.medium-modal {
+  width: min(58rem, 92vw); max-width: none;
+  height: min(38rem, 88vh); max-height: none;
+  margin: auto; padding: 0; border: 0;
+  background: var(--ivory); color: var(--charcoal);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+}
+.medium-modal[open] {
+  display: grid; grid-template-columns: 1fr 1fr;
+  animation: mediumIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.medium-modal::backdrop { background: rgba(20, 18, 14, 0.82); animation: mediumFade 0.4s ease; }
+.medium-modal.is-closing { animation: mediumOut 0.25s ease forwards; }
+.medium-modal.is-closing::backdrop { animation: mediumFade 0.25s ease reverse forwards; }
+@keyframes mediumIn  { from { opacity: 0; transform: translateY(18px) scale(0.98); } to { opacity: 1; transform: none; } }
+@keyframes mediumOut { to   { opacity: 0; transform: translateY(12px) scale(0.98); } }
+@keyframes mediumFade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes mediumSwap { from { opacity: 0; } to { opacity: 1; } }
+.medium-modal.is-swapping .medium-media img,
+.medium-modal.is-swapping .medium-body > :not(.medium-nav) { animation: mediumSwap 0.35s ease; }
+
+.medium-media { background: var(--charcoal); min-height: 0; overflow: hidden; }
+.medium-media img {
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center 25%;
+}
+.medium-body {
+  display: flex; flex-direction: column;
+  padding: 3.4rem 3rem 2.2rem;
+  overflow-y: auto;
+}
+.medium-num {
+  font-size: 0.62rem; letter-spacing: 0.3em; text-transform: uppercase;
+  color: var(--gold-ink); margin-bottom: 1rem;
+}
+.medium-body h3 { font-size: clamp(1.8rem, 3vw, 2.4rem); font-style: italic; margin-bottom: 0.6rem; }
+.medium-subtitle {
+  font-family: var(--font-serif); font-style: italic;
+  font-size: 1.1rem; color: var(--gold-ink);
+  margin-bottom: 1.4rem;
+}
+.medium-story p:not(.medium-subtitle) { color: var(--text-muted); font-size: 0.98rem; line-height: 1.85; }
+.medium-link {
+  display: inline-block; margin-top: 1.4rem; padding-bottom: 0.2rem;
+  font-size: 0.7rem; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--charcoal);
+  border-bottom: 1px solid var(--gold);
+  transition: color var(--transition), border-color var(--transition), letter-spacing var(--transition);
+}
+.medium-link:hover, .medium-link:focus-visible { color: var(--gold-ink); letter-spacing: 0.28em; }
+.medium-link:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; }
+.medium-nav {
+  display: flex; justify-content: space-between; gap: 1rem;
+  margin-top: auto; padding-top: 2.4rem;
+  border-top: 1px solid var(--gold-pale);
+}
+.medium-step {
+  padding: 0.9rem 0 0.2rem;
+  font-size: 0.66rem; letter-spacing: 0.24em; text-transform: uppercase;
+  color: var(--text-muted);
+  transition: color var(--transition);
+}
+.medium-step:hover { color: var(--charcoal); }
+.medium-step:focus-visible, .medium-close:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+.medium-close {
+  position: absolute; top: 1rem; right: 1rem; z-index: 2;
+  width: 40px; height: 40px;
+  display: grid; place-items: center;
+  font-size: 1rem; line-height: 1;
+  background: rgba(248, 244, 239, 0.92); color: var(--charcoal);
+  border-radius: 50%;
+  transition: background var(--transition);
+}
+.medium-close:hover { background: var(--gold); }
+html.modal-open { overflow: hidden; }
 
 /* ── PHILOSOPHY BAND ───────────────────────── */
 #philosophy {
   background: var(--deep-olive);
-  padding: 3.5rem 0 0;
+  padding: 3.5rem 0;
   overflow: visible;
   position: relative;
 }
 .philosophy-split {
   display: flex;
-  align-items: flex-end;
-  max-width: 1400px;
+  align-items: center;
+  gap: 1rem;
+  max-width: 1100px;
   margin: 0 auto;
-  min-height: 460px;
+  padding: 0 var(--pad);
 }
 .philosophy-split-image {
-  flex: 0 0 42%;
-  max-width: 42%;
-  margin-top: -3.5rem;
-  align-self: flex-start;
-  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.45);
+  flex: 0 0 auto;
+  width: clamp(150px, 20vw, 220px);
+  border: 1px solid rgba(197, 164, 107, 0.5);
+  padding: 6px;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.35);
   overflow: hidden;
   position: relative;
-  z-index: 2;
+  cursor: zoom-in;
+  transition: transform var(--transition), border-color var(--transition);
 }
+.philosophy-split-image:hover,
+.philosophy-split-image:focus-visible { transform: translateY(-3px); border-color: var(--gold); }
+.philosophy-split-image:hover .gallery-zoom-icon { opacity: 1; transform: scale(1); }
 .philosophy-photo {
-  width: 100%; height: 480px;
+  width: 100%; aspect-ratio: 3 / 4; height: auto;
   object-fit: cover; object-position: top center;
 }
+.lightbox.single .lightbox-nav,
+.lightbox.single .lightbox-caption { display: none; }
 .philosophy-split-text .section-label { color: var(--gold); }
 .philosophy-split-text {
   flex: 1;
@@ -755,6 +872,16 @@ h2 em, h3 em { color: var(--gold-ink); }
 .reel-card:hover,
 .reel-card:focus-visible { transform: translateY(-4px); box-shadow: 0 16px 38px rgba(26, 26, 24, 0.24); }
 .reel-card video { width: 100%; height: 100%; object-fit: cover; }
+/* Instagram embed: IG draws a 54px header, then a 4:5 media box with the 9:16
+   video centred in it. Widening the iframe to 128/90 of the card and centring it
+   makes the video exactly fill the card; header, side bars and footer are clipped. */
+.reel-embed { background: #000; }
+.reel-embed iframe {
+  position: absolute; top: -54px; left: -21.111%;
+  width: 142.222%; height: calc(200% + 54px);
+  border: 0;
+}
+.reel-embed .reel-badge, .reel-embed .reel-title { pointer-events: none; }
 .reel-card::after {
   content: ''; position: absolute; inset: 0; pointer-events: none;
   background: linear-gradient(
@@ -797,51 +924,6 @@ h2 em, h3 em { color: var(--gold-ink); }
   font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase;
   color: var(--gold-light);
 }
-
-/* ── SHOWREEL ──────────────────────────────── */
-.reel-frame {
-  position: relative;
-  aspect-ratio: 16 / 9;
-  min-height: 320px;
-  overflow: hidden;
-  background: var(--charcoal);
-}
-.reel-frame video {
-  position: absolute; inset: 0;
-  width: 100%; height: 100%; object-fit: cover;
-}
-.reel-frame::after {
-  content: ''; position: absolute; inset: 0;
-  background: linear-gradient(to top, rgba(20, 18, 14, 0.7), transparent 45%);
-  pointer-events: none;
-}
-.reel-caption {
-  position: absolute; left: var(--pad); bottom: 2.2rem; z-index: 2;
-}
-.reel-caption span {
-  display: block;
-  font-size: 0.62rem; letter-spacing: 0.3em;
-  text-transform: uppercase; color: var(--gold);
-  margin-bottom: 0.5rem;
-}
-.reel-caption h3 {
-  font-family: var(--font-serif); font-style: italic;
-  font-size: clamp(1.6rem, 4vw, 2.6rem);
-  color: rgba(248, 244, 239, 0.85);
-}
-.reel-controls {
-  position: absolute; right: var(--pad); bottom: 2.2rem; z-index: 3;
-  display: flex; gap: 0.6rem;
-}
-.reel-btn {
-  width: 44px; height: 44px;
-  background: rgba(197, 164, 107, 0.18);
-  border: 1px solid var(--gold);
-  color: var(--ivory);
-  display: flex; align-items: center; justify-content: center;
-  transition: background var(--transition), color var(--transition);
-}
-.reel-btn:hover { background: var(--gold); color: var(--charcoal); }
 
 /* ── CONTACT ───────────────────────────────── */
 .contact-grid {
@@ -1001,10 +1083,8 @@ footer {
   .about-image-wrap { max-width: 26rem; }
   .about-text { padding-left: 0; }
   .contact-grid { grid-template-columns: 1fr; gap: 3rem; }
-  .philosophy-split { flex-direction: column; align-items: stretch; }
-  .philosophy-split-image { flex: none; max-width: 100%; margin-top: -3.5rem; }
-  .philosophy-photo { height: 380px; }
-  .philosophy-split-text { padding: 2.5rem var(--pad) 3.5rem; }
+  .philosophy-split-text { padding: 1.5rem 0 1.5rem 1.5rem; }
+  .triptych { grid-template-columns: repeat(2, 1fr); }
   .lightbox-prev { left: 0.5rem; }
   .lightbox-next { right: 0.5rem; }
 }
@@ -1044,8 +1124,6 @@ footer {
   .hero-scroll-hint { display: none; }
 
   .about-badge { position: static; margin-top: 1.5rem; min-width: 0; }
-  .about-highlights { gap: 1.5rem; justify-content: space-between; }
-  .highlight-num { font-size: 2rem; }
 
   .gallery-filter { width: 100%; }
   .filter-btn { flex: 1 1 auto; padding: 0.65rem 1rem; letter-spacing: 0.14em; }
@@ -1057,15 +1135,32 @@ footer {
   .gallery-overlay-text b { font-size: 1rem; }
   .gallery-zoom-icon { display: none; }
 
-  .triptych { grid-template-columns: 1fr; }
-  .panel { aspect-ratio: 4 / 5; }
+  .panel { aspect-ratio: 3 / 4; }
+  .panel-label { left: 0.9rem; bottom: 0.9rem; }
 
-  .philosophy-photo { height: 300px; }
-  .philosophy-blockquote::before { font-size: 5rem; }
+  /* Expanded card goes full screen: image on top, text scrolls below */
+  .medium-modal { width: 100vw; height: 100dvh; max-height: none; }
+  .medium-modal[open] { grid-template-columns: 1fr; grid-template-rows: minmax(0, 52%) 1fr; }
+  .medium-body { padding: 1.6rem var(--pad) 1.2rem; }
+  .medium-body h3 { font-size: 1.9rem; }
+  .medium-subtitle { margin-bottom: 1rem; }
+  .medium-nav { padding-top: 1rem; }
+  .medium-step { padding: 0.8rem 0; }
 
-  .reel-frame { aspect-ratio: 4 / 3; }
-  .reel-caption { bottom: 1.4rem; }
-  .reel-controls { bottom: 1.4rem; }
+  .philosophy-split { gap: 0; align-items: flex-start; }
+  .philosophy-split-image { width: 34vw; max-width: 140px; padding: 4px; }
+  .philosophy-split-text { padding: 0 0 0 1rem; }
+  .philosophy-blockquote { font-size: 1.02rem; line-height: 1.5; margin-bottom: 1rem; }
+  .philosophy-blockquote::before { font-size: 3.2rem; margin-bottom: 0.4rem; }
+  .philosophy-author { font-size: 0.6rem; letter-spacing: 0.2em; }
+
+  .pillars-grid { gap: 0.5rem; }
+  .pillar-card { padding: 1.1rem 0.8rem; }
+  .pillar-card .focus-num { margin-bottom: 0.9rem; }
+  .pillar-card h3 { font-size: 1rem; margin-bottom: 0; overflow-wrap: anywhere; }
+  .pillar-card p { display: none; }
+  .pillar-modal { padding: 2.4rem 1.4rem 1.6rem; }
+
 
   .lightbox-inner img { max-height: 68vh; }
   .lightbox-close { top: -2.2rem; }
@@ -1186,21 +1281,6 @@ footer {
           world, Nyambeka is developing a future where African creativity is modern, purposeful
           and globally relevant.
         </p>
-
-        <div class="about-highlights reveal reveal-delay-3">
-          <div class="highlight-item">
-            <span class="highlight-num">04</span>
-            <span class="highlight-label">Disciplines</span>
-          </div>
-          <div class="highlight-item">
-            <span class="highlight-num">07</span>
-            <span class="highlight-label">Portfolio looks</span>
-          </div>
-          <div class="highlight-item">
-            <span class="highlight-num">2026</span>
-            <span class="highlight-label">Miss Prom KCA Town Campus 26/26 <br>Face of Africa finalist</span>
-          </div>
-        </div>
       </div>
     </div>
   </div>
@@ -1218,8 +1298,7 @@ footer {
     <dl class="stats-grid">
       <div class="stat-card">
         <dt class="stat-label">Pageantry</dt>
-        <dd class="stat-value">Face of Africa International 2026 Finalist<br>
-        Miss Prom, KCA University Town Campus 2026</dd>
+        <dd class="stat-value">Face of Africa International 2026 Finalist</dd>
       </div>
       <div class="stat-card">
         <dt class="stat-label">Title</dt>
@@ -1231,8 +1310,7 @@ footer {
       </div>
       <div class="stat-card">
         <dt class="stat-label">Platform</dt>
-        <dd class="stat-value">Threads of Tomorrow
-Advocating for Sustainable Fashion Through Creativity & Circular Design</dd>
+        <dd class="stat-value">Miabrita Atelier, sustainable &amp; circular fashion</dd>
       </div>
     </dl>
   </div>
@@ -1268,8 +1346,8 @@ Advocating for Sustainable Fashion Through Creativity & Circular Design</dd>
       </article>
       <article class="focus-card reveal reveal-delay-2">
         <span class="focus-num">04 / 04</span>
-        <h3>collabs</h3>
-        <p>Available for fashion, beauty, lifestyle and creative campaigns that need a distinct point of view.</p>
+        <h4>Miabrita Atelier</h3>
+        <p>Building a sustainability-focused fashion brand that blends conscious design, modern sophistication and creativity. </p>
       </article>
     </div>
   </div>
@@ -1287,52 +1365,118 @@ Advocating for Sustainable Fashion Through Creativity & Circular Design</dd>
     <div class="gallery-filter reveal reveal-delay-2" id="filters" role="group" aria-label="Filter portfolio by category">
       <button class="filter-btn" type="button" data-filter="all" aria-pressed="true">All</button>
       <button class="filter-btn" type="button" data-filter="fashion" aria-pressed="false">High Fashion</button>
-      <button class="filter-btn" type="button" data-filter="editorial" aria-pressed="false">Editorial</button>
       <button class="filter-btn" type="button" data-filter="commercial" aria-pressed="false">Commercial</button>
       <button class="filter-btn" type="button" data-filter="pageantry" aria-pressed="false">Pageantry</button>
+      <button class="filter-btn" type="button" data-filter="creative" aria-pressed="false">Creative Shoots</button>
     </div>
 
     <div class="gallery-grid" id="galleryGrid">
-      <button class="gallery-item reveal" type="button" data-cat="fashion" data-src="fashion-1.jpg" aria-label="Open Runway Series I">
+      <button class="gallery-item reveal" type="button" data-cat="fashion" data-src="fashion-1.jpg" aria-label="Open Runway Series">
         <img src="fashion-1.jpg" alt="High fashion runway look" loading="lazy" decoding="async">
         <span class="gallery-zoom-icon" aria-hidden="true">+</span>
-        <span class="gallery-overlay"><span class="gallery-overlay-text">High Fashion<b>Runway Series I</b></span></span>
+        <span class="gallery-overlay"><span class="gallery-overlay-text">High Fashion<b>Runway Series</b></span></span>
       </button>
 
-      <button class="gallery-item reveal reveal-delay-1" type="button" data-cat="editorial" data-src="editorial-1.jpg" aria-label="Open Nairobi Nights">
-        <img src="tvf.jpeg" alt="Editorial portrait, Nairobi" loading="lazy" decoding="async">
+      <button class="gallery-item reveal reveal-delay-1" type="button" data-cat="fashion" data-src="wizmario.jpeg" aria-label="Open Wiz Mario">
+        <img src="wizmario.jpeg" alt="High fashion look for Wiz Mario" loading="lazy" decoding="async">
         <span class="gallery-zoom-icon" aria-hidden="true">+</span>
-        <span class="gallery-overlay"><span class="gallery-overlay-text">Editorial<b>Nairobi Nights</b></span></span>
+        <span class="gallery-overlay"><span class="gallery-overlay-text">High Fashion<b>Wiz Mario</b></span></span>
       </button>
 
-      <button class="gallery-item reveal reveal-delay-2" type="button" data-cat="commercial" data-src="commercial-1.jpg" aria-label="Open Brand Campaign">
-        <img src="commercial-1.jpg" alt="Commercial brand campaign look" loading="lazy" decoding="async">
+      <button class="gallery-item reveal reveal-delay-2" type="button" data-cat="fashion" data-src="wizmario3.jpeg" aria-label="Open Wiz Mario">
+        <img src="wizmario3.jpeg" alt="High fashion look for Wiz Mario" loading="lazy" decoding="async">
         <span class="gallery-zoom-icon" aria-hidden="true">+</span>
-        <span class="gallery-overlay"><span class="gallery-overlay-text">Commercial<b>Brand Campaign</b></span></span>
+        <span class="gallery-overlay"><span class="gallery-overlay-text">High Fashion<b>Wiz Mario</b></span></span>
       </button>
 
-      <button class="gallery-item reveal" type="button" data-cat="pageantry" data-src="pageantry-1.jpg" aria-label="Open Crown of Impact">
+      <button class="gallery-item reveal" type="button" data-cat="fashion" data-src="wizmario2.jpeg" aria-label="Open Wiz Mario">
+        <img src="wizmario2.jpeg" alt="High fashion look for Wiz Mario" loading="lazy" decoding="async">
+        <span class="gallery-zoom-icon" aria-hidden="true">+</span>
+        <span class="gallery-overlay"><span class="gallery-overlay-text">High Fashion<b>Wiz Mario</b></span></span>
+      </button>
+
+      <button class="gallery-item reveal reveal-delay-1" type="button" data-cat="fashion" data-src="mikalla1.jpeg" aria-label="Open Mikalla">
+        <img src="mikalla1.jpeg" alt="High fashion look for Mikalla" loading="lazy" decoding="async">
+        <span class="gallery-zoom-icon" aria-hidden="true">+</span>
+        <span class="gallery-overlay"><span class="gallery-overlay-text">High Fashion<b>Mikalla</b></span></span>
+      </button>
+
+      <button class="gallery-item reveal reveal-delay-2" type="button" data-cat="fashion" data-src="globalfusion.jpeg" aria-label="Open Global Fusion">
+        <img src="globalfusion.jpeg" alt="High fashion look, Global Fusion" loading="lazy" decoding="async">
+        <span class="gallery-zoom-icon" aria-hidden="true">+</span>
+        <span class="gallery-overlay"><span class="gallery-overlay-text">High Fashion<b>Global Fusion</b></span></span>
+      </button>
+
+      <button class="gallery-item reveal" type="button" data-cat="fashion" data-src="tvf.jpeg" aria-label="Open TVF">
+        <img src="tvf.jpeg" alt="High fashion look, TVF" loading="lazy" decoding="async">
+        <span class="gallery-zoom-icon" aria-hidden="true">+</span>
+        <span class="gallery-overlay"><span class="gallery-overlay-text">High Fashion<b>TVF</b></span></span>
+      </button>
+
+      <button class="gallery-item reveal reveal-delay-1" type="button" data-cat="fashion" data-src="tvf2.jpeg" aria-label="Open TVF">
+        <img src="tvf2.jpeg" alt="High fashion look, TVF" loading="lazy" decoding="async">
+        <span class="gallery-zoom-icon" aria-hidden="true">+</span>
+        <span class="gallery-overlay"><span class="gallery-overlay-text">High Fashion<b>TVF</b></span></span>
+      </button>
+
+      <button class="gallery-item reveal reveal-delay-2" type="button" data-cat="pageantry" data-src="pageantry.jpeg" aria-label="Open Pageantry photo">
         <img src="pageantry.jpeg" alt="Pageantry stage moment" loading="lazy" decoding="async">
         <span class="gallery-zoom-icon" aria-hidden="true">+</span>
         <span class="gallery-overlay"><span class="gallery-overlay-text">Pageantry</span></span>
       </button>
 
-      <button class="gallery-item reveal reveal-delay-1" type="button" data-cat="fashion" data-src="fashion-2.jpg" aria-label="Open Runway Series II">
-        <img src="mikalla1.jpeg" alt="High fashion editorial look" loading="lazy" decoding="async">
+      <button class="gallery-item reveal" type="button" data-cat="pageantry" data-src="pageantry1.jpeg" aria-label="Open Pageantry photo">
+        <img src="pageantry1.jpeg" alt="Pageantry stage moment" loading="lazy" decoding="async">
         <span class="gallery-zoom-icon" aria-hidden="true">+</span>
-        <span class="gallery-overlay"><span class="gallery-overlay-text">High Fashion<b>Runway Series II</b></span></span>
+        <span class="gallery-overlay"><span class="gallery-overlay-text">Pageantry</span></span>
       </button>
 
-      <button class="gallery-item reveal reveal-delay-2" type="button" data-cat="editorial" data-src="editorial-2.jpg" aria-label="Open Golden Light">
-        <img src="pageantry1.jpeg" alt="Editorial in golden light" loading="lazy" decoding="async">
+      <button class="gallery-item reveal reveal-delay-1" type="button" data-cat="pageantry" data-src="pageantry2.jpeg" aria-label="Open Pageantry photo">
+        <img src="pageantry2.jpeg" alt="Pageantry stage moment" loading="lazy" decoding="async">
         <span class="gallery-zoom-icon" aria-hidden="true">+</span>
-        <span class="gallery-overlay"><span class="gallery-overlay-text">Editorial<b>Golden Light</b></span></span>
+        <span class="gallery-overlay"><span class="gallery-overlay-text">Pageantry</span></span>
       </button>
 
-      <button class="gallery-item reveal" type="button" data-cat="editorial" data-src="portrait.jpg" aria-label="Open Close Study">
-        <img src="portrait.jpg" alt="Close beauty portrait study" loading="lazy" decoding="async">
+      <button class="gallery-item reveal" type="button" data-cat="creative" data-src="creative/img_9075.jpg" aria-label="Open creative shoot photo">
+        <img src="creative/img_9075.jpg" alt="Creative shoot" loading="lazy" decoding="async">
         <span class="gallery-zoom-icon" aria-hidden="true">+</span>
-        <span class="gallery-overlay"><span class="gallery-overlay-text">Editorial<b>Close Study</b></span></span>
+        <span class="gallery-overlay"><span class="gallery-overlay-text">Creative Shoots</span></span>
+      </button>
+
+      <button class="gallery-item reveal reveal-delay-1" type="button" data-cat="creative" data-src="creative/img_9089.jpg" aria-label="Open creative shoot photo">
+        <img src="creative/img_9089.jpg" alt="Creative shoot" loading="lazy" decoding="async">
+        <span class="gallery-zoom-icon" aria-hidden="true">+</span>
+        <span class="gallery-overlay"><span class="gallery-overlay-text">Creative Shoots</span></span>
+      </button>
+
+      <button class="gallery-item reveal reveal-delay-2" type="button" data-cat="creative" data-src="creative/img_9104.jpg" aria-label="Open creative shoot photo">
+        <img src="creative/img_9104.jpg" alt="Creative shoot" loading="lazy" decoding="async">
+        <span class="gallery-zoom-icon" aria-hidden="true">+</span>
+        <span class="gallery-overlay"><span class="gallery-overlay-text">Creative Shoots</span></span>
+      </button>
+
+      <button class="gallery-item reveal" type="button" data-cat="creative" data-src="creative/img_9154.jpg" aria-label="Open creative shoot photo">
+        <img src="creative/img_9154.jpg" alt="Creative shoot" loading="lazy" decoding="async">
+        <span class="gallery-zoom-icon" aria-hidden="true">+</span>
+        <span class="gallery-overlay"><span class="gallery-overlay-text">Creative Shoots</span></span>
+      </button>
+
+      <button class="gallery-item reveal reveal-delay-1" type="button" data-cat="creative" data-src="creative/img_9177.jpg" aria-label="Open creative shoot photo">
+        <img src="creative/img_9177.jpg" alt="Creative shoot" loading="lazy" decoding="async">
+        <span class="gallery-zoom-icon" aria-hidden="true">+</span>
+        <span class="gallery-overlay"><span class="gallery-overlay-text">Creative Shoots</span></span>
+      </button>
+
+      <button class="gallery-item reveal reveal-delay-2" type="button" data-cat="creative" data-src="creative/img_9184.jpg" aria-label="Open creative shoot photo">
+        <img src="creative/img_9184.jpg" alt="Creative shoot" loading="lazy" decoding="async">
+        <span class="gallery-zoom-icon" aria-hidden="true">+</span>
+        <span class="gallery-overlay"><span class="gallery-overlay-text">Creative Shoots</span></span>
+      </button>
+
+      <button class="gallery-item reveal" type="button" data-cat="creative" data-src="creative/img_9258.jpg" aria-label="Open creative shoot photo">
+        <img src="creative/img_9258.jpg" alt="Creative shoot" loading="lazy" decoding="async">
+        <span class="gallery-zoom-icon" aria-hidden="true">+</span>
+        <span class="gallery-overlay"><span class="gallery-overlay-text">Creative Shoots</span></span>
       </button>
     </div>
 
@@ -1350,33 +1494,29 @@ Advocating for Sustainable Fashion Through Creativity & Circular Design</dd>
       </div>
 
       <div class="reels-track" id="reelsTrack">
-        <button class="reel-card" type="button" aria-label="Play The latest drop">
-          <video src="showreel.MP4" preload="metadata" muted loop playsinline></video>
+        <div class="reel-card reel-embed">
+          <iframe src="https://www.instagram.com/reel/DXtpEj4DP_o/embed/" title="Runway Moments reel on Instagram" loading="lazy" scrolling="no" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>
           <span class="reel-badge">Reel</span>
-          <span class="reel-play" aria-hidden="true">▶</span>
-          <span class="reel-title">Crowning Moments<span>Miss Prom KCA Town Campus</span></span>
-        </button>
+          <span class="reel-title">Runway Moments<span>Runway</span></span>
+        </div>
 
-        <button class="reel-card" type="button" aria-label="Play Aura Beauty UGC">
-          <video src="aurabeauty.mp4" preload="metadata" muted loop playsinline></video>
+        <div class="reel-card reel-embed">
+          <iframe src="https://www.instagram.com/reel/DapAy39IPai/embed/" title="Aura Beauty reel on Instagram" loading="lazy" scrolling="no" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>
           <span class="reel-badge">Reel</span>
-          <span class="reel-play" aria-hidden="true">▶</span>
           <span class="reel-title">Aurabeauty<span>UGC</span></span>
-        </button>
+        </div>
 
-        <button class="reel-card" type="button" aria-label="Play Behind the look">
-          <video src="reel-3.mp4" preload="metadata" muted loop playsinline></video>
+        <div class="reel-card reel-embed">
+          <iframe src="https://www.instagram.com/reel/DYouITrIWSd/embed/" title="Glow by Jane reel on Instagram" loading="lazy" scrolling="no" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>
           <span class="reel-badge">Reel</span>
-          <span class="reel-play" aria-hidden="true">▶</span>
-          <span class="reel-title">Behind the look<span>Backstage</span></span>
-        </button>
+          <span class="reel-title">Glow by Jane<span>Beauty</span></span>
+        </div>
 
-        <button class="reel-card" type="button" aria-label="Play Crown moments">
-          <video src="reel-4.mp4" preload="metadata" muted loop playsinline></video>
+        <div class="reel-card reel-embed">
+          <iframe src="https://www.instagram.com/reel/DbDN_gDsogE/embed/" title="Bath and Beauty reel on Instagram" loading="lazy" scrolling="no" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>
           <span class="reel-badge">Reel</span>
-          <span class="reel-play" aria-hidden="true">▶</span>
-          <span class="reel-title">Crown moments<span>Pageantry</span></span>
-        </button>
+          <span class="reel-title">Bath and Beauty<span>Skincare</span></span>
+        </div>
       </div>
     </div>
   </div>
@@ -1391,34 +1531,71 @@ Advocating for Sustainable Fashion Through Creativity & Circular Design</dd>
       <div class="section-divider reveal reveal-delay-1"></div>
     </div>
 
+    <!-- Each panel's hidden .panel-story is shown in the #mediumModal card when the panel is opened -->
     <div class="triptych">
-      <figure class="panel reveal">
-        <img src="wiz2.jpeg" alt="Nyambeka as the model" loading="lazy" decoding="async">
-        <figcaption class="panel-label"><span>01</span><h3>The Model</h3></figcaption>
-      </figure>
-      <figure class="panel reveal reveal-delay-1">
+      <article class="panel reveal">
+        <img src="wizmario3.jpeg" alt="Nyambeka as the model" loading="lazy" decoding="async">
+        <div class="panel-label"><span>01</span><h3>The Model</h3></div>
+        <button class="panel-open" type="button" aria-haspopup="dialog" aria-label="Open 01, The Model"></button>
+        <div class="panel-story" hidden>
+          <p class="medium-subtitle">Expression. Confidence. Storytelling.</p>
+          <p>Fashion is my language of expression, confidence and storytelling. Through every look, I explore identity, embody ideas and bring stories to life.</p>
+        </div>
+      </article>
+      <article class="panel reveal reveal-delay-1">
         <img src="transform-2.jpg" alt="Nyambeka as the designer" loading="lazy" decoding="async">
-        <figcaption class="panel-label"><span>02</span><h3>The Designer</h3></figcaption>
-      </figure>
-      <figure class="panel reveal reveal-delay-2">
+        <div class="panel-label"><span>02</span><h3>The Designer</h3></div>
+        <button class="panel-open" type="button" aria-haspopup="dialog" aria-label="Open 02, The Designer"></button>
+        <div class="panel-story" hidden>
+          <p class="medium-subtitle">Creativity. Individuality. Sustainability.</p>
+          <p>Through Miabrita Atelier, I explore the intersection of creativity, individuality and sustainable fashion, turning ideas into meaningful designs.</p>
+          <a class="medium-link" href="https://www.instagram.com/miabrita.atelier" target="_blank" rel="noopener" aria-label="Explore my designs on Miabrita Atelier's Instagram (opens in a new tab)">Explore my designs <span aria-hidden="true">→</span></a>
+        </div>
+      </article>
+      <article class="panel reveal reveal-delay-2">
         <img src="breetheleader.jpeg" alt="Nyambeka as the leader" loading="lazy" decoding="async">
-        <figcaption class="panel-label"><span>03</span><h3>The Leader</h3></figcaption>
-      </figure>
-      <figure class="panel reveal reveal-delay-2">
-        <img src="breetheleader.jpeg" alt="Nyambeka as the technologist" loading="lazy" decoding="async">
-        <figcaption class="panel-label"><span>03</span><h3>The Technologist</h3></figcaption>
-      </figure>
+        <div class="panel-label"><span>03</span><h3>The Leader</h3></div>
+        <button class="panel-open" type="button" aria-haspopup="dialog" aria-label="Open 03, The Leader"></button>
+        <div class="panel-story" hidden>
+          <p class="medium-subtitle">Purpose. Service. Impact.</p>
+          <p>Leadership is where purpose meets action. Through youth leadership and community engagement, I create space for collaboration, growth and meaningful impact.</p>
+        </div>
+      </article>
+      <article class="panel reveal reveal-delay-2">
+        <img src="technologist.jpg" alt="Nyambeka speaking at a tech event" loading="lazy" decoding="async">
+        <div class="panel-label"><span>04</span><h3>The Technologist</h3></div>
+        <button class="panel-open" type="button" aria-haspopup="dialog" aria-label="Open 04, The Technologist"></button>
+        <div class="panel-story" hidden>
+          <p class="medium-subtitle">Innovation. Curiosity. Possibility.</p>
+          <p>With a background in Applied Computing, I explore how technology and digital innovation can solve problems, challenge possibilities and shape the future.</p>
+        </div>
+      </article>
     </div>
   </div>
+
+  <dialog class="medium-modal" id="mediumModal" aria-labelledby="mediumTitle">
+    <button class="medium-close" type="button" aria-label="Close">✕</button>
+    <div class="medium-media"><img id="mediumImg" src="" alt=""></div>
+    <div class="medium-body">
+      <span class="medium-num" id="mediumNum"></span>
+      <h3 id="mediumTitle"></h3>
+      <div class="medium-story" id="mediumStory"></div>
+      <div class="medium-nav">
+        <button class="medium-step" id="mediumPrev" type="button"><span aria-hidden="true">←</span> Previous</button>
+        <button class="medium-step" id="mediumNext" type="button">Next <span aria-hidden="true">→</span></button>
+      </div>
+    </div>
+  </dialog>
 </section>
 
 <!-- ══ PHILOSOPHY ══ -->
 <section id="philosophy">
   <div class="philosophy-split">
-    <div class="philosophy-split-image">
-      <img class="philosophy-photo" src="pageantry-0.jpg"
-           alt="Nyambeka Bridgit on stage" loading="lazy" decoding="async">
-    </div>
+    <button class="philosophy-split-image" id="philosophyPhoto" type="button" aria-label="View photo larger">
+      <img class="philosophy-photo" src="transform-2.jpg"
+           alt="Nyambeka Bridgit portrait" loading="lazy" decoding="async">
+      <span class="gallery-zoom-icon" aria-hidden="true">+</span>
+    </button>
     <div class="philosophy-split-text">
       <span class="section-label">Philosophy</span>
       <blockquote class="philosophy-blockquote">
@@ -1445,47 +1622,41 @@ adds to the other. I want to build a career that gives me room to explore all of
       </p>
     </div>
 
-    <div class="focus-grid">
-      <article class="focus-card reveal">
+    <div class="pillars-grid">
+      <article class="focus-card pillar-card reveal" tabindex="0" role="button" aria-haspopup="dialog">
         <span class="focus-num">01</span>
         <h3>Technology</h3>
         <p>I’ve always been curious about how things work and how technology can make ideas possible.
            Studying Applied Computing has given me a space to explore that curiosity, from AI and digital innovation to the ways technology can shape the future of fashion and creativity. 
            I’m interested in where these two worlds meet and what I can create there.</p>
+        <span class="pillar-more" aria-hidden="true">Read →</span>
       </article>
-      <article class="focus-card reveal reveal-delay-1">
+      <article class="focus-card pillar-card reveal reveal-delay-1" tabindex="0" role="button" aria-haspopup="dialog">
         <span class="focus-num">02</span>
         <h3>Leadership</h3>
         <p>My leadership journey has taught me that leadership isn’t about having the loudest voice, but about
            stepping forward and using your voice with purpose. Through my work with AYLF and campus leadership,
             I’ve learned to take initiative, work with others, and create opportunities that make people feel seen and capable.</p>
-      <article class="focus-card reveal reveal-delay-2">
+        <span class="pillar-more" aria-hidden="true">Read →</span>
+      </article>
+      <article class="focus-card pillar-card reveal reveal-delay-2" tabindex="0" role="button" aria-haspopup="dialog">
         <span class="focus-num">03</span>
         <h3>Sustainability</h3>
         <p>My interest in sustainability comes from believing that creativity can give things another life. 
           I’m drawn to upcycling and sustainable fashion because they allow me to look at what might be considered
            waste and imagine what it could become. For me, sustainability is not just about the clothes we make, it’s 
            about being more intentional with what we create, what we consume and the impact we leave behind</p>
+        <span class="pillar-more" aria-hidden="true">Read →</span>
       </article>
     </div>
   </div>
-</section>
 
-<!-- ══ SHOWREEL ══ -->
-<section id="reel" style="padding:0;">
-  <div class="reel-frame">
-    <video id="reelVideo" autoplay muted loop playsinline preload="metadata" poster="editorial-2.jpg">
-      <source src="showreel.MP4" type="video/mp4">
-    </video>
-    <div class="reel-caption">
-      <span>Showreel · 2026</span>
-      <h3>The Work in Motion</h3>
-    </div>
-    <div class="reel-controls">
-      <button class="reel-btn" id="reelPlay" type="button" aria-label="Pause showreel">❚❚</button>
-      <button class="reel-btn" id="reelMute" type="button" aria-label="Unmute showreel">🔇</button>
-    </div>
-  </div>
+  <dialog class="pillar-modal" id="pillarModal" aria-labelledby="pillarModalTitle">
+    <button class="pillar-modal-close" type="button" aria-label="Close">✕</button>
+    <span class="focus-num" id="pillarModalNum"></span>
+    <h3 id="pillarModalTitle"></h3>
+    <p id="pillarModalText"></p>
+  </dialog>
 </section>
 
 <!-- ══ CONTACT ══ -->
@@ -1507,7 +1678,21 @@ adds to the other. I want to build a career that gives me room to explore all of
             <div>
               <span class="contact-detail-label">Email</span>
               <span class="contact-detail-value">
-                <a href="mailto:nyambekabridgit@gmail.com">nyambekabridgit@gmail.com</a>
+                <a href="mailto:nyambekabridgit@gmail.com?subject=Portfolio%20Enquiry%20%E2%80%93%20Bridgit%20Nyambeka">nyambekabridgit@gmail.com</a>
+              </span>
+            </div>
+          </div>
+
+          <div class="contact-detail">
+            <span class="contact-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M5 3h3.5l1.6 4.5-2.3 1.4a12 12 0 0 0 7.3 7.3l1.4-2.3L21 15.5V19a2 2 0 0 1-2 2A17 17 0 0 1 3 5a2 2 0 0 1 2-2Z"/>
+              </svg>
+            </span>
+            <div>
+              <span class="contact-detail-label">Phone / WhatsApp</span>
+              <span class="contact-detail-value">
+                <a href="https://wa.me/254710239889?text=Hi%20Bridgit%2C%20I%20came%20across%20your%20portfolio%20and%20would%20love%20to%20connect%20with%20you%20about%20a%20potential%20opportunity." target="_blank" rel="noopener" aria-label="Chat on WhatsApp: +254 710 239 889">+254 710 239 889</a>
               </span>
             </div>
           </div>
@@ -1609,7 +1794,7 @@ adds to the other. I want to build a career that gives me room to explore all of
     <button class="lightbox-nav lightbox-prev" id="lbPrev" type="button" aria-label="Previous image">←</button>
     <img id="lbImage" src="" alt="">
     <button class="lightbox-nav lightbox-next" id="lbNext" type="button" aria-label="Next image">→</button>
-    <p class="lightbox-caption"><b id="lbCat"></b><span id="lbName"></span> &nbsp;·&nbsp; <span id="lbCount"></span></p>
+    <p class="lightbox-caption"><b id="lbCat"></b><span id="lbName"></span></p>
   </div>
 </div>
 
@@ -1686,6 +1871,19 @@ adds to the other. I want to build a career that gives me room to explore all of
   /* ── GALLERY FILTER ── */
   var items = $$('.gallery-item');
 
+  // "All" shows only the first photo of each category; a category button shows all of its photos
+  var seenCats = {};
+  var firstOfCat = items.filter(function (item) {
+    if (seenCats[item.dataset.cat]) return false;
+    return (seenCats[item.dataset.cat] = true);
+  });
+  function inFilter(item, cat) {
+    return cat === 'all' ? firstOfCat.indexOf(item) > -1 : item.dataset.cat === cat;
+  }
+  items.forEach(function (item) {
+    if (!inFilter(item, 'all')) { item.hidden = true; item.classList.add('is-out'); }
+  });
+
   $('#filters').addEventListener('click', function (e) {
     var btn = e.target.closest('button[data-filter]');
     if (!btn) return;
@@ -1696,7 +1894,7 @@ adds to the other. I want to build a career that gives me room to explore all of
     });
 
     items.forEach(function (item) {
-      if (cat === 'all' || item.dataset.cat === cat) {
+      if (inFilter(item, cat)) {
         item.hidden = false;
         requestAnimationFrame(function () { item.classList.remove('is-out'); });
       } else {
@@ -1710,11 +1908,10 @@ adds to the other. I want to build a career that gives me room to explore all of
 
   /* ── LIGHTBOX ── */
   var lb      = $('#lightbox');
-  var lbImage = $('#lbImage'), lbCat = $('#lbCat'), lbName = $('#lbName'), lbCount = $('#lbCount');
+  var lbImage = $('#lbImage'), lbCat = $('#lbCat'), lbName = $('#lbName');
   var index = 0, lastFocus = null;
 
   function visible() { return items.filter(function (i) { return !i.hidden; }); }
-  function pad(n) { return n < 10 ? '0' + n : String(n); }
 
   function render() {
     var list = visible();
@@ -1724,9 +1921,9 @@ adds to the other. I want to build a career that gives me room to explore all of
     var text = $('.gallery-overlay-text', item);
     lbImage.src  = item.dataset.src;
     lbImage.alt  = $('img', item).alt;
+    var name = $('b', text);
     lbCat.textContent   = text.childNodes[0].textContent.trim();
-    lbName.textContent  = $('b', text).textContent;
-    lbCount.textContent = pad(index + 1) + ' / ' + pad(list.length);
+    lbName.textContent  = name ? name.textContent : '';
   }
 
   function openLB(item) {
@@ -1738,13 +1935,126 @@ adds to the other. I want to build a career that gives me room to explore all of
     $('#lbClose').focus();
   }
   function closeLB() {
-    lb.classList.remove('open');
+    lb.classList.remove('open', 'single');
     if (lastFocus) lastFocus.focus();
   }
 
   items.forEach(function (item) {
     item.addEventListener('click', function () { openLB(item); });
   });
+
+  // Single photo outside the gallery: no arrows, caption or counter.
+  var philosophyPhoto = $('#philosophyPhoto');
+  if (philosophyPhoto) {
+    philosophyPhoto.addEventListener('click', function () {
+      var img = $('img', philosophyPhoto);
+      lastFocus = philosophyPhoto;
+      lbImage.src = img.getAttribute('src');
+      lbImage.alt = img.alt;
+      lb.classList.add('open', 'single');
+      $('#lbClose').focus();
+    });
+  }
+
+  /* ── PURPOSE PILLARS: open full text in a dialog ── */
+  var pillarModal = $('#pillarModal');
+  if (pillarModal && pillarModal.showModal) {
+    $$('.pillar-card').forEach(function (card) {
+      function openPillar() {
+        $('#pillarModalNum').textContent   = $('.focus-num', card).textContent;
+        $('#pillarModalTitle').textContent = $('h3', card).textContent;
+        $('#pillarModalText').textContent  = $('p', card).textContent.replace(/\s+/g, ' ').trim();
+        pillarModal.showModal();
+      }
+      card.addEventListener('click', openPillar);
+      card.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openPillar(); }
+      });
+    });
+    $('.pillar-modal-close', pillarModal).addEventListener('click', function () { pillarModal.close(); });
+    // Click on the backdrop (outside the dialog box) closes it
+    pillarModal.addEventListener('click', function (e) {
+      var r = pillarModal.getBoundingClientRect();
+      if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) pillarModal.close();
+    });
+  }
+
+  /* ── MANY MEDIUMS: expanded identity card with prev/next ── */
+  var mediumModal = $('#mediumModal');
+  var panels = $$('#mediums .panel');
+  if (mediumModal && mediumModal.showModal && panels.length) {
+    var mIndex = 0, mOpener = null, mClosing = null;
+
+    function titleOf(i) { return $('h3', panels[i]).textContent; }
+
+    function renderMedium(swap) {
+      var p = panels[mIndex], img = $('img', p);
+      var prev = (mIndex + panels.length - 1) % panels.length;
+      var next = (mIndex + 1) % panels.length;
+      $('#mediumImg').src = img.getAttribute('src');
+      $('#mediumImg').alt = img.alt;
+      $('#mediumNum').textContent   = $('.panel-label span', p).textContent + ' / ' + (panels.length < 10 ? '0' : '') + panels.length;
+      $('#mediumTitle').textContent = titleOf(mIndex);
+      $('#mediumStory').innerHTML   = $('.panel-story', p).innerHTML;
+      $('#mediumPrev').setAttribute('aria-label', 'Previous: ' + titleOf(prev));
+      $('#mediumNext').setAttribute('aria-label', 'Next: ' + titleOf(next));
+      if (swap && !reduceMotion) {
+        mediumModal.classList.remove('is-swapping');
+        void mediumModal.offsetWidth; // restart the fade
+        mediumModal.classList.add('is-swapping');
+      }
+    }
+
+    function openMedium(i, opener) {
+      clearTimeout(mClosing);
+      mediumModal.classList.remove('is-closing');
+      mIndex = i; mOpener = opener;
+      renderMedium(false);
+      document.documentElement.classList.add('modal-open');
+      if (!mediumModal.open) mediumModal.showModal();
+      $('.medium-close', mediumModal).focus();
+    }
+
+    function closeMedium() {
+      if (!mediumModal.open || mediumModal.classList.contains('is-closing')) return;
+      function done() {
+        mediumModal.classList.remove('is-closing', 'is-swapping');
+        mediumModal.close();
+      }
+      if (reduceMotion) { done(); return; }
+      mediumModal.classList.add('is-closing');
+      mClosing = setTimeout(done, 250);
+    }
+
+    function stepMedium(d) {
+      mIndex = (mIndex + d + panels.length) % panels.length;
+      renderMedium(true);
+    }
+
+    panels.forEach(function (p, i) {
+      var btn = $('.panel-open', p);
+      btn.addEventListener('click', function () { openMedium(i, btn); });
+    });
+    $('.medium-close', mediumModal).addEventListener('click', closeMedium);
+    $('#mediumPrev').addEventListener('click', function () { stepMedium(-1); });
+    $('#mediumNext').addEventListener('click', function () { stepMedium(1); });
+
+    mediumModal.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowLeft')  stepMedium(-1);
+      if (e.key === 'ArrowRight') stepMedium(1);
+    });
+    // Escape: run the closing transition instead of the instant native close
+    mediumModal.addEventListener('cancel', function (e) { e.preventDefault(); closeMedium(); });
+    // Clicks on the backdrop land on the dialog element itself, outside its box
+    mediumModal.addEventListener('click', function (e) {
+      var r = mediumModal.getBoundingClientRect();
+      if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) closeMedium();
+    });
+    mediumModal.addEventListener('close', function () {
+      document.documentElement.classList.remove('modal-open');
+      if (mOpener) mOpener.focus();
+    });
+  }
 
   $('#lbClose').addEventListener('click', closeLB);
   $('#lbPrev').addEventListener('click', function () { index--; render(); });
@@ -1757,6 +2067,7 @@ adds to the other. I want to build a career that gives me room to explore all of
       return;
     }
     if (e.key === 'Escape')     closeLB();
+    if (lb.classList.contains('single')) return;
     if (e.key === 'ArrowLeft')  { index--; render(); }
     if (e.key === 'ArrowRight') { index++; render(); }
   });
@@ -1766,12 +2077,14 @@ adds to the other. I want to build a career that gives me room to explore all of
   if (reelsTrack) {
     var reelCards = $$('.reel-card', reelsTrack);
 
-    reelCards.forEach(function (card) {
+    var videoCards = reelCards.filter(function (c) { return $('video', c); });
+
+    videoCards.forEach(function (card) {
       var v = $('video', card);
 
       card.addEventListener('click', function () {
         if (v.paused) {
-          reelCards.forEach(function (o) { if (o !== card) $('video', o).pause(); });
+          videoCards.forEach(function (o) { if (o !== card) $('video', o).pause(); });
           v.muted = false;
           var p = v.play();
           if (p) p.catch(function () { v.muted = true; v.play().catch(function () {}); });
@@ -1802,35 +2115,6 @@ adds to the other. I want to build a career that gives me room to explore all of
     reelsTrack.addEventListener('scroll', syncReelArrows, { passive: true });
     window.addEventListener('resize', syncReelArrows);
     syncReelArrows();
-  }
-
-  /* ── SHOWREEL ── */
-  var video = $('#reelVideo'), playBtn = $('#reelPlay'), muteBtn = $('#reelMute');
-
-  playBtn.addEventListener('click', function () {
-    if (video.paused) video.play(); else video.pause();
-  });
-  video.addEventListener('play', function () {
-    playBtn.textContent = '❚❚';
-    playBtn.setAttribute('aria-label', 'Pause showreel');
-  });
-  video.addEventListener('pause', function () {
-    playBtn.textContent = '▶';
-    playBtn.setAttribute('aria-label', 'Play showreel');
-  });
-  muteBtn.addEventListener('click', function () {
-    video.muted = !video.muted;
-    muteBtn.textContent = video.muted ? '🔇' : '🔊';
-    muteBtn.setAttribute('aria-label', video.muted ? 'Unmute showreel' : 'Mute showreel');
-  });
-
-  if ('IntersectionObserver' in window) {
-    new IntersectionObserver(function (entries) {
-      entries.forEach(function (en) {
-        if (en.isIntersecting) { var p = video.play(); if (p) p.catch(function () {}); }
-        else video.pause();
-      });
-    }, { threshold: 0.25 }).observe(video);
   }
 
   /* ── CONTACT FORM ── */
